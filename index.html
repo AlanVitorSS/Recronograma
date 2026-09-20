@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#6750a4">
+<title>Cronograma de Estudos v4</title>
+<style>
+:root{--bg:#f4f5f9;--card:#fff;--text:#202124;--muted:#707070;--accent:#6750a4;--soft:#eee9ff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,sans-serif;transition:.25s}
+header{background:var(--accent);color:#fff;padding:20px 17px 15px;border-radius:0 0 24px 24px}
+.top{display:flex;align-items:center;justify-content:space-between}h1{font-size:23px;margin:0}.sub{font-size:13px;opacity:.82;margin-top:3px}
+button,select,input{font:inherit}.icon{border:0;background:#ffffff24;color:#fff;border-radius:11px;padding:9px 12px;font-weight:700}
+nav{display:flex;gap:6px;margin-top:16px}nav button{border:0;background:#ffffff20;color:#fff;padding:8px 11px;border-radius:10px;font-weight:650}
+main{max-width:720px;margin:auto;padding:15px}.card{background:var(--card);border-radius:18px;padding:15px;margin-bottom:12px;box-shadow:0 3px 15px #0000000b}
+.title{font-size:18px;font-weight:800;margin-bottom:12px}.empty{text-align:center;color:var(--muted);padding:30px 10px}
+.item{display:flex;align-items:center;gap:11px;border:1px solid #e8e8e8;border-radius:14px;padding:11px;margin:8px 0}.dot{width:11px;height:11px;border-radius:50%;flex:none}.info{flex:1}.subject{font-weight:750}.time{font-size:12px;color:var(--muted);margin-top:3px}.check{width:27px;height:27px;border:2px solid var(--accent);border-radius:8px;background:transparent}.check.done{background:var(--accent);color:#fff}.check.done:after{content:"✓";display:block;text-align:center;line-height:22px}
+.fab{position:fixed;right:20px;bottom:20px;border:0;width:58px;height:58px;border-radius:50%;background:var(--accent);color:#fff;font-size:30px;box-shadow:0 7px 20px #0004}
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}.week div,.month div{background:#f0f0f0;border-radius:9px;padding:7px 3px;text-align:center;font-size:11px;min-height:42px}.week .has,.month .has{background:var(--soft);color:var(--accent);font-weight:750}.month{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}.month div{min-height:45px;text-align:left;padding:6px}
+.modal{display:none;position:fixed;inset:0;background:#0008;align-items:flex-end;z-index:5}.modal.open{display:flex}.sheet{width:100%;max-width:720px;margin:auto;background:var(--card);border-radius:23px 23px 0 0;padding:20px;max-height:92vh;overflow:auto}
+label{display:block;font-size:13px;font-weight:700;margin:10px 0 5px}input,select{width:100%;border:1px solid #d8d8d8;border-radius:11px;padding:11px;background:var(--card);color:var(--text)}.row{display:grid;grid-template-columns:1fr 1fr;gap:9px}.actions{display:flex;gap:9px;margin-top:17px}.primary,.secondary{flex:1;border:0;border-radius:11px;padding:12px;font-weight:750}.primary{background:var(--accent);color:#fff}.secondary{background:#e9e9e9;color:#333}
+.progress{display:flex;justify-content:center}.donut{width:180px;height:180px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--accent) var(--p),#ddd 0)}.donut:after{content:"";width:124px;height:124px;border-radius:50%;background:var(--card);grid-area:1/1}.pct{grid-area:1/1;z-index:2;text-align:center;font-size:25px;font-weight:850}
+.leg{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:14px}.leg div{font-size:12px;display:flex;align-items:center;gap:6px}
+.test{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.test button{border:0;border-radius:10px;padding:10px;font-weight:700}
+.notice{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.4}
+
+/* temas */
+body.dark{--bg:#111318;--card:#1d2027;--text:#f2f2f2;--muted:#aeb3bd;--soft:#2b2442}body.dark .week div,body.dark .month div{background:#292c33}
+body.ocean{--bg:#eaf7fb;--card:#fff;--text:#17313a;--accent:#007f9e;--soft:#d9f4fa}
+body.forest{--bg:#edf4ed;--card:#fff;--text:#1d3322;--accent:#2d7a45;--soft:#ddf0e2}
+body.sunset{--bg:#fff1e8;--card:#fff;--text:#38231d;--accent:#d45b36;--soft:#ffe0d3}
+body.lavender{--bg:#f5f0fb;--card:#fff;--text:#30233e;--accent:#8156b7;--soft:#eadff7}
+body.neon{--bg:#0b0d12;--card:#151923;--text:#f4f7ff;--muted:#9aa4b8;--accent:#00c7ff;--soft:#123446}body.neon header{box-shadow:0 0 24px #00c7ff55}body.neon .week div,body.neon .month div{background:#202530}
+</style>
+
+<style>
+/* Layout variations: each theme changes the visual language, not only colors */
+body.dark header{border-radius:0;padding-bottom:22px}
+body.ocean header{border-radius:0 0 34px 34px}
+body.forest header{border-radius:28px;margin:10px 10px 0;padding:20px}
+body.sunset header{border-radius:0 0 40px 0}
+body.lavender header{border-radius:30px 30px 0 0}
+body.neon header{border-radius:0;border-bottom:2px solid var(--accent)}
+body.ocean .card{border-left:5px solid var(--accent)}
+body.forest .card{border-radius:12px;box-shadow:0 2px 8px #245a2a18}
+body.sunset .card{border-radius:24px}
+body.lavender .card{border:1px solid #eadff7;box-shadow:none}
+body.neon .card{border:1px solid #283444;box-shadow:0 0 12px #00c7ff12}
+body.dark .donut,body.neon .donut{background:conic-gradient(var(--accent) var(--p),#30343c 0)}
+/* A no-chart theme: the study list is the focus */
+body.forest .progress{display:none}
+body.forest .home-summary{display:block!important}
+.home-summary{display:none}
+.week-title{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:5px}
+.week-title div{text-align:center;font-size:11px;font-weight:800;color:var(--muted)}
+.day-column{min-height:75px}
+</style>
+</head>
+<body>
+<header><div class="top"><div><h1>Meu Cronograma</h1><div class="sub" id="dateLabel"></div></div><button class="icon" onclick="openProfile()">Perfil</button></div>
+<nav><button onclick="setView('day')">Dia</button><button onclick="setView('week')">Semana</button><button onclick="setView('month')">Mês</button></nav></header>
+<main><div id="content"></div></main><button class="fab" onclick="openAdd()">+</button>
+
+<div class="modal" id="addModal"><div class="sheet">
+<h2>Agendar matéria</h2>
+<label>Matéria / tópico</label><input id="subject" placeholder="Ex.: Direito Civil">
+<div class="row"><div><label>Data</label><input id="date" type="date"></div><div><label>Início</label><input id="start" type="time"></div></div>
+<div class="row"><div><label>Término</label><input id="end" type="time"></div><div><label>Descanso (min)</label><input id="rest" type="number" min="0" value="10"></div></div>
+<label>Alerta de início</label><select id="startAlert"><option>Som</option><option>Vibração</option><option>Som + vibração</option><option>Nenhum</option></select>
+<label>Alerta de término</label><select id="endAlert"><option>Som</option><option>Vibração</option><option>Som + vibração</option><option>Nenhum</option></select>
+<label>Alerta do término do descanso</label><select id="restAlert"><option>Som</option><option>Vibração</option><option>Som + vibração</option><option>Nenhum</option></select>
+<div class="actions"><button class="secondary" onclick="closeModal('addModal')">Cancelar</button><button class="primary" onclick="addItem()">Agendar</button></div>
+</div></div>
+
+<div class="modal" id="profileModal"><div class="sheet">
+<h2>Perfil e temas</h2>
+<div class="progress"><div class="donut" id="donut"><div class="pct" id="pct">0%</div></div></div>
+<div class="notice" id="progressText" style="text-align:center"></div>
+<div class="leg" id="legend"></div>
+<label>Tema</label>
+<select id="theme" onchange="changeTheme(this.value)">
+<option value="normal">Clássico</option><option value="dark">Escuro</option><option value="ocean">Oceano</option><option value="forest">Natureza</option><option value="sunset">Pôr do sol</option><option value="lavender">Lavanda</option><option value="neon">Neon</option>
+</select>
+<div class="notice">Alguns temas exibem o gráfico de progresso na tela inicial; o estilo pode ser alterado aqui.</div>
+<label>Som dos alertas</label><select id="soundMode" onchange="saveSettings()"><option value="default">Som padrão</option><option value="custom">Áudio escolhido do celular</option></select>
+<div id="audioBox" style="display:none"><label>Escolher áudio</label><input id="audioFile" type="file" accept="audio/*"><div class="notice">O áudio será usado em ciclos de 5 segundos.</div></div>
+<div class="test"><button onclick="testSound()">🔊 Testar som</button><button onclick="testVibration()">📳 Testar vibração</button><button onclick="stopAlert()">⏹ Parar alerta</button></div>
+<div class="actions"><button class="primary" onclick="closeModal('profileModal')">Fechar</button></div>
+</div></div>
+
+<script>
+const colors=['#22a06b','#3485d1','#9b59b6','#e67e22','#d94f70','#18a6a6','#777'];
+let data=JSON.parse(localStorage.getItem('studyData')||'[]'),settings=JSON.parse(localStorage.getItem('studySettings')||'{"theme":"normal","soundMode":"default"}');
+let selected=new Date();selected.setHours(0,0,0,0),view='day',audio=null,audioTimer=null;
+const key=d=>d.toISOString().slice(0,10),dateText=d=>d.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long'});
+document.getElementById('date').value=key(selected);document.getElementById('dateLabel').textContent=dateText(selected);
+applyTheme();render();
+
+function save(){localStorage.setItem('studyData',JSON.stringify(data))}
+function saveSettings(){settings.soundMode=document.getElementById('soundMode').value;localStorage.setItem('studySettings',JSON.stringify(settings));document.getElementById('audioBox').style.display=settings.soundMode==='custom'?'block':'none'}
+function applyTheme(){document.body.className=settings.theme==='normal'?'':settings.theme;document.getElementById('theme').value=settings.theme;document.getElementById('soundMode').value=settings.soundMode;document.getElementById('audioBox').style.display=settings.soundMode==='custom'?'block':'none'}
+function changeTheme(v){settings.theme=v;localStorage.setItem('studySettings',JSON.stringify(settings));applyTheme();render()}
+function setView(v){view=v;render()}
+function render(){
+let c=document.getElementById('content');
+if(view==='day'){let arr=data.filter(x=>x.date===key(selected)).sort((a,b)=>a.start.localeCompare(b.start));c.innerHTML=homeGraph()+`<div class="card"><div class="title">Matérias de ${dateText(selected)}</div>${list(arr)}</div>`}
+else if(view==='week'){
+let s=new Date(selected);s.setDate(s.getDate()-s.getDay());
+let headers='',cols='';
+for(let i=0;i<7;i++){
+ let d=new Date(s);d.setDate(s.getDate()+i);
+ let arr=data.filter(x=>x.date===key(d)).sort((a,b)=>a.start.localeCompare(b.start));
+ headers+=`<div onclick="pick('${key(d)}')">${d.toLocaleDateString('pt-BR',{weekday:'short'}).replace('.','')}<br><b>${d.getDate()}</b></div>`;
+ cols+=`<div class="day-column">${arr.length?arr.map((x,j)=>`<div class="item" style="display:block;padding:8px" onclick="pick('${x.date}')"><span class="dot" style="display:inline-block;background:${colors[j%colors.length]}"></span> <b>${esc(x.subject)}</b><div class="time">${x.start}–${x.end}</div></div>`).join(''):'<div class="notice" style="text-align:center">Nenhuma matéria marcada</div>'}</div>`;
+}
+c=`<div class="card"><div class="title">Semana</div><div class="week-title">${headers}</div><div class="week">${cols}</div></div>`;
+}
+else{let y=selected.getFullYear(),m=selected.getMonth(),f=new Date(y,m,1),l=new Date(y,m+1,0),cells='';for(let i=0;i<f.getDay();i++)cells+='<div></div>';for(let n=1;n<=l.getDate();n++){let d=new Date(y,m,n),q=data.filter(x=>x.date===key(d)).length;cells+=`<div class="${q?'has':''}" onclick="pick('${key(d)}')"><b>${n}</b>${q?'<br>• '+q:''}</div>`}c=`<div class="card"><div class="title">${selected.toLocaleDateString('pt-BR',{month:'long',year:'numeric'})}</div><div class="month">${cells}</div></div>`}
+}
+function homeGraph(){
+let total=data.length,done=data.filter(x=>x.done).length,p=total?Math.round(done/total*100):0;
+if(settings.theme==='forest'){
+ return `<div class="card home-summary"><div class="title">Resumo de hoje</div><div style="font-size:30px;font-weight:850">${done}/${total}</div><div class="notice">matérias concluídas</div></div>`;
+}
+if(settings.theme==='neon'){
+ return `<div class="card"><div class="title">Progresso</div><div style="font-size:42px;font-weight:900;text-align:center">${p}%</div><div class="notice" style="text-align:center">${done} concluídas de ${total}</div></div>`;
+}
+if(settings.theme==='dark'){
+ return `<div class="card"><div class="title">Progresso do cronograma</div><div style="display:flex;align-items:center;gap:16px"><div class="donut" style="--p:${p*3.6}deg;width:125px;height:125px"><div class="pct" style="font-size:20px">${p}%</div></div><div><b>${done}</b> concluídas<br><span class="notice">${total} agendadas</span></div></div></div>`;
+}
+return `<div class="card"><div class="title">Progresso</div><div class="progress"><div class="donut" style="--p:${p*3.6}deg"><div class="pct">${p}%</div></div></div>${distribution()}</div>`;
+}
+function distribution(){let total=data.length,map={};data.forEach(x=>map[x.subject]=(map[x.subject]||0)+1);let entries=Object.entries(map);if(!entries.length)return '<div class="notice" style="text-align:center">Agende matérias para ver a distribuição.</div>';return '<div class="leg">'+entries.map(([n,v],i)=>`<div><span class="dot" style="background:${colors[i%colors.length]}"></span>${esc(n)} <b>${Math.round(v/total*100)}%</b></div>`).join('')+'</div>'}
+function list(a){if(!a.length)return '<div class="empty">Nenhuma matéria no momento.</div>';return a.map((x,i)=>`<div class="item"><span class="dot" style="background:${colors[i%colors.length]}"></span><button class="check ${x.done?'done':''}" onclick="toggle('${x.id}')"></button><div class="info"><div class="subject">${esc(x.subject)}</div><div class="time">${x.date.split('-').reverse().join('/')} • ${x.start} às ${x.end}</div></div></div>`).join('')}
+function esc(s){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function toggle(id){let x=data.find(a=>a.id===id);x.done=!x.done;save();render()}
+function pick(k){selected=new Date(k+'T00:00');document.getElementById('dateLabel').textContent=dateText(selected);view='day';render()}
+function openAdd(){document.getElementById('date').value=key(selected);document.getElementById('addModal').classList.add('open')}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+function addItem(){let s=document.getElementById('subject').value.trim(),d=document.getElementById('date').value,st=document.getElementById('start').value,en=document.getElementById('end').value;if(!s||!d||!st||!en){alert('Preencha matéria, data, início e término.');return}data.push({id:String(Date.now()),subject:s,date:d,start:st,end:en,rest:document.getElementById('rest').value,startAlert:document.getElementById('startAlert').value,endAlert:document.getElementById('endAlert').value,restAlert:document.getElementById('restAlert').value,done:false});save();closeModal('addModal');document.getElementById('subject').value='';render()}
+function openProfile(){let total=data.length,done=data.filter(x=>x.done).length,p=total?Math.round(done/total*100):0;document.getElementById('donut').style.setProperty('--p',p*3.6+'deg');document.getElementById('pct').textContent=p+'%';document.getElementById('progressText').textContent=`${done} de ${total} matérias concluídas`;document.getElementById('legend').innerHTML=distribution().replace('<div class="leg">','').replace('</div>','');document.getElementById('profileModal').classList.add('open')}
+document.getElementById('audioFile').addEventListener('change',e=>{let f=e.target.files[0];if(f){audio=new Audio(URL.createObjectURL(f));audio.loop=false}});
+function testVibration(){if(navigator.vibrate)navigator.vibrate([180,80,180]);else alert('Vibração não disponível neste navegador.')}
+function stopAlert(){if(audioTimer)clearTimeout(audioTimer);audioTimer=null;if(audio){audio.pause();audio.currentTime=0}}
+function playFiveSeconds(){
+ if(!audio)return;
+ audio.currentTime=0;audio.play().catch(()=>{});
+ audioTimer=setTimeout(()=>{
+   audio.pause();audio.currentTime=0;
+   audioTimer=setTimeout(playFiveSeconds,700);
+ },5000);
+}
+function testSound(){stopAlert();if(settings.soundMode==='custom'&&audio){playFiveSeconds();return}let C=window.AudioContext||window.webkitAudioContext;if(!C){alert('O navegador não permite o teste de som.');return}let ctx=new C(),o=ctx.createOscillator(),g=ctx.createGain();o.frequency.value=880;g.gain.value=.12;o.connect(g);g.connect(ctx.destination);o.start();o.stop(ctx.currentTime+1)}
+</script>
+</body>
+</html>
